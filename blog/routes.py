@@ -47,10 +47,12 @@ def generate_post(entry_id=None):
         if form.validate_on_submit():
             if entry_id:
                 form.populate_obj(entry)
+                flash('Post changed', 'success')
             else:
                 entry = Entry(title=form.title.data, body=form.body.data,
                               is_published=form.is_published.data)
                 db.session.add(entry)
+                flash('Post created', 'success')
             db.session.commit()
         else:
             errors = form.errors
@@ -97,4 +99,5 @@ def delete_entry(entry_id):
     errors = None
     db.session.delete(entry)
     db.session.commit()
+    flash('Post deleted', 'success')
     return redirect(url_for('list_drafts'))
