@@ -79,3 +79,11 @@ def logout():
         session.clear()
         flash('You are now logged out.', 'success')
     return redirect(url_for('index'))
+
+
+@app.route("/drafts/", methods=["GET", "POST"])
+@login_required
+def list_drafts():
+    all_posts = Entry.query.filter_by(
+        is_published=False).order_by(Entry.pub_date.desc())
+    return render_template("list_drafts.html", all_posts=all_posts)
