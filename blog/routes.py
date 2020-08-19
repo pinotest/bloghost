@@ -81,9 +81,20 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/drafts/", methods=["GET", "POST"])
+@app.route("/drafts/", methods=["GET"])
 @login_required
 def list_drafts():
-    all_posts = Entry.query.filter_by(
+    draft_posts = Entry.query.filter_by(
         is_published=False).order_by(Entry.pub_date.desc())
-    return render_template("list_drafts.html", all_posts=all_posts)
+    return render_template("list_drafts.html", drafts=draft_posts)
+
+
+@app.route("/drafts/<int:entry_id>", methods=["POST"])
+@login_required
+def delete_entry(entry_id):
+    entry = Entry.query.filter_by(id=entry_id).first_or_404()
+    logging.info("entry_id: %s" % entry_id)
+    errors = None
+    db.session.delete(entry)
+    db.session.commit()
+    return redirect(url_for('list_drafts'))
