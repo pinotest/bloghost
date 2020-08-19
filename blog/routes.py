@@ -2,6 +2,8 @@ from flask import render_template, request
 from blog.forms import EntryForm
 from blog.models import Entry, db
 from blog import app
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
 
 @app.route("/")
@@ -25,8 +27,8 @@ def generate_post(entry_id=None):
     if entry_id:
         entry = Entry.query.filter_by(id=entry_id).first_or_404()
         form = EntryForm(obj=entry)
-
-    form = EntryForm()
+    else:
+        form = EntryForm()
     errors = None
     if request.method == 'POST':
         if form.validate_on_submit():
